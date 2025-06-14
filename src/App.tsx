@@ -10,8 +10,7 @@ function App() {
     variables: {
       projectId: PROJECT_ID
     }
-  })
-  console.log(data)
+  }
 
   return (
     <>
