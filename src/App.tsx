@@ -12,6 +12,7 @@ import { ServicesView } from "@/components/section/services-view"
 import { useGetProjectQuery } from "@/graphql/generated/graphql"
 import { PROJECT_ID } from "@/config"
 import { Skeleton } from "@/components/ui/skeleton"
+import { RailwayLogo } from "./components/ui/logo"
 
 export default function App() {
   const { data, loading } = useGetProjectQuery({ variables: { id: PROJECT_ID } })
@@ -19,9 +20,13 @@ export default function App() {
 
   return (
     <div className="py-8 px-16 flex flex-col gap-4">
-      <h1 className="text-lg font-mono">
-        {loading ? <Skeleton className="h-8 w-10" /> : data?.project.name}
-      </h1>
+      <div className="flex gap-3 mb-2 align-middle">
+        <RailwayLogo />
+        <span className="text-gray-400">/</span>
+        <h1 className="text-lg font-mono">
+          {loading ? <Skeleton className="h-8 w-10" /> : data?.project.name}
+        </h1>
+      </div>
       {/* ── Tabs ─────────────────────────────────────────────────────────── */}
       <Tabs
         value={tab}

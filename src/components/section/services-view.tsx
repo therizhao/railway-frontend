@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { PROJECT_ID } from "@/config"
-import { useCreateServiceMutation, useGetServicesQuery } from "@/graphql/generated/graphql"
+import { useCreateServiceMutation, useDeleteServiceMutation, useGetServicesQuery } from "@/graphql/generated/graphql"
 import { Code } from "lucide-react"
 import { ServiceFlow } from "@/components/ui/service-flow"
 import { toast } from 'sonner'
@@ -13,9 +13,13 @@ import {
     SheetClose,
 } from "@/components/ui/sheet"
 import { DeploymentTable } from './deployment-table'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { AlertDialogHeader, AlertDialogFooter, AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
 
 
 export function ServicesView() {
+    const toastIdRef = useRef<string | number>(0)
     const { data, loading, refetch } = useGetServicesQuery({
         variables: {
             projectId: PROJECT_ID
@@ -35,7 +39,20 @@ export function ServicesView() {
                 },
             }
         )
-    const toastIdRef = useRef<string | number>(0)
+    const [deleteService] =
+        useDeleteServiceMutation(
+            {
+                onError: (e) => {
+                    toast.dismiss(toastIdRef.current)
+                    toast.error(e.message)
+                },
+                onCompleted: () => {
+                    toast.dismiss(toastIdRef.current)
+                    toast.success("Service deleted")
+                    refetch()
+                },
+            }
+        )
     const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null)
 
     const services = data?.project.services.edges.map((e) => e.node) ?? []
@@ -66,33 +83,80 @@ export function ServicesView() {
                     }
                 }}
             >
-                <SheetContent
-                    wide
-                    side="right"
-                >
-                    <SheetHeader>
-                        <SheetTitle className="flex items-center gap-2">
-                            {selectedService?.icon ? (
-                                <img
-                                    src={selectedService.icon}
-                                    alt=""
-                                    className="h-6 w-6 object-contain"
+                {selectedService &&
+                    <SheetContent
+                        wide
+                        side="right"
+                    >
+                        <SheetHeader>
+                            <SheetTitle className="flex items-center gap-2">
+                                {selectedService?.icon ? (
+                                    <img
+                                        src={selectedService.icon}
+                                        alt=""
+                                        className="h-6 w-6 object-contain"
+                                    />
+                                ) : <Code className="h-6 w-6 text-gray-400" />}
+                                {selectedService?.name}
+                            </SheetTitle>
+                        </SheetHeader>
+                        {/* ------------------------- Tabs ---------------------------- */}
+                        <Tabs defaultValue="deployments" className="px-4">
+                            <TabsList>
+                                <TabsTrigger value="deployments">Deployments</TabsTrigger>
+                                <TabsTrigger value="settings">Settings</TabsTrigger>
+                            </TabsList>
+
+                            {/* Deployments tab */}
+                            <TabsContent value="deployments" className="mt-4">
+                                <DeploymentTable
+                                    serviceId={selectedService.id}
+                                    hideServiceColumn
                                 />
-                            ) : <Code className="h-6 w-6 text-gray-400" />}
-                            {selectedService?.name}
-                        </SheetTitle>
-                    </SheetHeader>
-                    <div className="flex flex-col px-4">
+                            </TabsContent>
 
-                        {selectedServiceId &&
+                            {/* Settings tab */}
+                            <TabsContent value="settings" className="mt-4 space-y-4 px-1">
+                                <p className="font-semibold">Danger zone</p>
+                                <AlertDialog>
+                                    {/* trigger = red button */}
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="destructive">Delete service</Button>
+                                    </AlertDialogTrigger>
 
-                            <div>
-                                <h2 className="text-sm mb-4 font-semibold">Deployments</h2>
-                                <DeploymentTable serviceId={selectedServiceId} hideServiceColumn />
-                            </div>}
-                    </div>
-                    <SheetClose />
-                </SheetContent>
+                                    {/* confirmation dialog */}
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Delete this service?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. All deployments and data associated with
+                                                <span className="font-semibold px-1">
+                                                    {selectedService?.name ?? "(unknown)"}
+                                                </span>
+                                                will be permanently removed.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                                            {/* confirm action */}
+                                            <AlertDialogAction
+                                                onClick={() => {
+                                                    deleteService({ variables: { id: selectedService.id } })
+                                                    toastIdRef.current = toast.loading(`Deleting ${selectedService.name}…`)
+                                                }}
+                                            >
+                                                Confirm
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </TabsContent>
+                        </Tabs>
+
+                        <SheetClose />
+                    </SheetContent>}
             </Sheet>
         </>
     )
