@@ -16,6 +16,8 @@ import {
 import { formatInTimeZone } from "date-fns-tz"
 import {
     DropdownMenuItem,
+    DropdownMenuGroup,
+    DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu"
 import { DeploymentStatus, GetDeploymentsQuery, useGetDeploymentsQuery, useRedeployDeploymentMutation, useRestartDeploymentMutation, useStopDeploymentMutation } from "@/graphql/generated/graphql";
 import { Badge } from "@/components/ui/badge"
@@ -211,34 +213,47 @@ export function DeploymentTable({
     const renderActions = useCallback(
         (row: Node) => (
             <>
-                <DropdownMenuItem
-                    onClick={() => {
-                        restartDeployment({ variables: { id: row.id } })
-                        toastIdRef.current = toast.loading("Restarting deployment…")
-                    }}
-                >
-                    Restart
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                    onClick={() => {
-                        redeployDeployment({ variables: { id: row.id } })
-                        toastIdRef.current = toast.loading("Redeploying…")
-                    }}
-                >
-                    Redeploy
-                </DropdownMenuItem>
-
-                {!row.deploymentStopped &&
+                <DropdownMenuGroup>
                     <DropdownMenuItem
                         onClick={() => {
-                            stopDeployment({ variables: { id: row.id } })
-                            toastIdRef.current = toast.loading("Stopping deployment…")
+                            if (row.staticUrl) {
+                                window.open(row.staticUrl, "_blank", "noopener,noreferrer")
+                            }
                         }}
                     >
-                        Stop
-                    </DropdownMenuItem>}
+                        View Deployment
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                    <DropdownMenuItem
+                        onClick={() => {
+                            restartDeployment({ variables: { id: row.id } })
+                            toastIdRef.current = toast.loading("Restarting deployment…")
+                        }}
+                    >
+                        Restart
+                    </DropdownMenuItem>
 
+                    <DropdownMenuItem
+                        onClick={() => {
+                            redeployDeployment({ variables: { id: row.id } })
+                            toastIdRef.current = toast.loading("Redeploying…")
+                        }}
+                    >
+                        Redeploy
+                    </DropdownMenuItem>
+
+                    {!row.deploymentStopped &&
+                        <DropdownMenuItem
+                            onClick={() => {
+                                stopDeployment({ variables: { id: row.id } })
+                                toastIdRef.current = toast.loading("Stopping deployment…")
+                            }}
+                        >
+                            Stop
+                        </DropdownMenuItem>}
+                </DropdownMenuGroup>
             </>
         ),
         [restartDeployment],
