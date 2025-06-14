@@ -142,7 +142,7 @@ export function ServicesView() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         /* Tailwind: blue link, underline, ellipsis when too long */
-                                        className="flex items-center gap-2 text-gray-600 hover:text-black-800 pl-1 pb-4"
+                                        className="flex items-center gap-2 text-gray-600 hover:underline hover:text-black-800 pl-1 pb-4"
                                     >
                                         <Globe className={`h-4 w-4 shrink-0 top-[1px] ${globeColor}`} />
                                         <span>{display}</span>
