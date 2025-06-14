@@ -14,7 +14,6 @@ function App() {
 
   return (
     <>
-      {JSON.stringify(data)}
       <Button>start</Button>
       <Button>end</Button>
     </>
