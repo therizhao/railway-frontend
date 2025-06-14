@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { PROJECT_ID } from "@/config"
-import { useCreateServiceMutation, useDeleteServiceMutation, useGetServicesQuery } from "@/graphql/generated/graphql"
-import { Code } from "lucide-react"
+import { useCreateServiceMutation, useDeleteServiceMutation, useGetServicesQuery, DeploymentStatus } from "@/graphql/generated/graphql"
+import { Code, Globe } from "lucide-react"
 import { ServiceFlow } from "@/components/ui/service-flow"
 import { toast } from 'sonner'
 import { Skeleton } from "@/components/ui/skeleton"
@@ -121,7 +121,34 @@ export function ServicesView() {
                             </TabsList>
 
                             {/* Deployments tab */}
-                            <TabsContent value="deployments" className="mt-4">
+                            <TabsContent value="deployments" className="mt-2 flex flex-col">
+                                {(() => {
+                                    const deployment = selectedService.deployments.edges[0].node;
+                                    if (!deployment) {
+                                        return null
+                                    }
+
+                                    const url = deployment.staticUrl ?? ''
+                                    const display = url.replace(/^https?:\/\//, "")
+                                    const globeColor =
+                                        deployment.status === DeploymentStatus.Success
+                                            ? "text-emerald-600"   // nice pastel-green
+                                            : "text-gray-400"
+
+
+                                    {/* link ---------------------------------------------------------------- */ }
+                                    return <a
+                                        href={url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        /* Tailwind: blue link, underline, ellipsis when too long */
+                                        className="flex items-center gap-2 text-gray-600 hover:text-black-800 pl-1 pb-4"
+                                    >
+                                        <Globe className={`h-4 w-4 shrink-0 top-[1px] ${globeColor}`} />
+                                        <span>{display}</span>
+                                    </a>
+
+                                })()}
                                 <DeploymentTable
                                     serviceId={selectedService.id}
                                     hideServiceColumn

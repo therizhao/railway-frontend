@@ -5457,14 +5457,14 @@ export type CustomerTogglePayoutsToCreditsInput = {
 
 export type DeploymentFieldsFragment = { __typename?: 'Deployment', id: string, status: DeploymentStatus, createdAt: any, updatedAt: any, statusUpdatedAt?: any | null, projectId: string, serviceId?: string | null, environmentId: string, url?: string | null, staticUrl?: string | null, canRollback: boolean, canRedeploy: boolean, suggestAddServiceDomain: boolean, deploymentStopped: boolean, environment: { __typename?: 'Environment', name: string }, service: { __typename?: 'Service', id: string, name: string }, creator?: { __typename?: 'DeploymentCreator', id: string, name?: string | null, avatar?: string | null } | null };
 
-export type ServiceFieldsFragment = { __typename?: 'Service', name: string, icon?: string | null, id: string };
+export type ServiceFieldsFragment = { __typename?: 'Service', name: string, icon?: string | null, id: string, deployments: { __typename?: 'ServiceDeploymentsConnection', edges: Array<{ __typename?: 'ServiceDeploymentsConnectionEdge', node: { __typename?: 'Deployment', status: DeploymentStatus, staticUrl?: string | null } }> } };
 
 export type CreateServiceMutationVariables = Exact<{
   input: ServiceCreateInput;
 }>;
 
 
-export type CreateServiceMutation = { __typename?: 'Mutation', serviceCreate: { __typename?: 'Service', name: string, icon?: string | null, id: string } };
+export type CreateServiceMutation = { __typename?: 'Mutation', serviceCreate: { __typename?: 'Service', name: string, icon?: string | null, id: string, deployments: { __typename?: 'ServiceDeploymentsConnection', edges: Array<{ __typename?: 'ServiceDeploymentsConnectionEdge', node: { __typename?: 'Deployment', status: DeploymentStatus, staticUrl?: string | null } }> } } };
 
 export type DeleteServiceMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -5513,7 +5513,7 @@ export type GetServicesQueryVariables = Exact<{
 }>;
 
 
-export type GetServicesQuery = { __typename?: 'Query', project: { __typename?: 'Project', services: { __typename?: 'ProjectServicesConnection', edges: Array<{ __typename?: 'ProjectServicesConnectionEdge', node: { __typename?: 'Service', name: string, icon?: string | null, id: string } }> } } };
+export type GetServicesQuery = { __typename?: 'Query', project: { __typename?: 'Project', services: { __typename?: 'ProjectServicesConnection', edges: Array<{ __typename?: 'ProjectServicesConnectionEdge', node: { __typename?: 'Service', name: string, icon?: string | null, id: string, deployments: { __typename?: 'ServiceDeploymentsConnection', edges: Array<{ __typename?: 'ServiceDeploymentsConnectionEdge', node: { __typename?: 'Deployment', status: DeploymentStatus, staticUrl?: string | null } }> } } }> } } };
 
 export const DeploymentFieldsFragmentDoc = gql`
     fragment DeploymentFields on Deployment {
@@ -5550,6 +5550,14 @@ export const ServiceFieldsFragmentDoc = gql`
   name
   icon
   id
+  deployments(first: 1) {
+    edges {
+      node {
+        status
+        staticUrl
+      }
+    }
+  }
 }
     `;
 export const CreateServiceDocument = gql`

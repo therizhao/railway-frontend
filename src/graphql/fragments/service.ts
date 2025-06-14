@@ -5,5 +5,14 @@ export const SERVICE_FIELDS = gql`
     name
     icon
     id
+
+    deployments(first: 1) {
+      edges {
+        node {
+          status
+          staticUrl
+        }
+      }
+    }
   }
 `;
