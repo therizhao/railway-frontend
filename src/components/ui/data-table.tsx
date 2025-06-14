@@ -1,11 +1,11 @@
-"use client"
-
 import * as React from "react"
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel
 } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 
@@ -15,6 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -27,16 +28,12 @@ import {
 /* -------------------------------------------------------------------------- */
 /*                                   TYPES                                    */
 /* -------------------------------------------------------------------------- */
-
-export interface DataTableProps<T> {
-  /** Column definitions passed directly to TanStack table */
+export type DataTableProps<T> = {
   columns: ColumnDef<T>[]
-  /** Array of data items to render */
-  data: T[]
-  /**
-   * Render function for the row-level actions dropdown.
-   */
+  loading: boolean
+  data?: T[]
   renderActions: (row: T) => React.ReactNode
+  hideHeader?: boolean;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -45,12 +42,12 @@ export interface DataTableProps<T> {
 
 export function DataTable<T extends { id?: string }>({
   columns,
-  data,
+  data = [],
+  loading,
+  hideHeader = false,
   renderActions,
 }: DataTableProps<T>) {
-  /* ---------------------------------------------------------------------- */
-  /*                       build an extra “actions” column                  */
-  /* ---------------------------------------------------------------------- */
+  /* -------------------------------- Actions col -------------------------- */
   const actionsColumn = React.useMemo<ColumnDef<T>>(
     () => ({
       id: "actions",
@@ -58,7 +55,6 @@ export function DataTable<T extends { id?: string }>({
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original
-
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -67,7 +63,6 @@ export function DataTable<T extends { id?: string }>({
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-
             <DropdownMenuContent align="end">
               {renderActions(item)}
             </DropdownMenuContent>
@@ -75,15 +70,29 @@ export function DataTable<T extends { id?: string }>({
         )
       },
     }),
-    [renderActions]
+    [renderActions],
   )
 
-  /* merge user columns with the extra actions column */
+  const [sorting, setSorting] = React.useState<SortingState>([])
+
+  /* Merge user columns with the extra actions column */
   const table = useReactTable({
     data,
-    columns: React.useMemo(() => [...columns, actionsColumn], [columns, actionsColumn]),
+    columns: React.useMemo(
+      () => [...columns, actionsColumn],
+      [columns, actionsColumn],
+    ),
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   })
+
+
+  const colCount = table.getAllColumns().length
+  const skeletonRows = 5 // how many placeholder rows to show while loading
 
   /* ---------------------------------------------------------------------- */
   /*                                 render                                 */
@@ -91,40 +100,56 @@ export function DataTable<T extends { id?: string }>({
   return (
     <div className="w-full rounded-md border overflow-x-auto">
       <Table>
-        {/* ------------------------------- Header ------------------------------ */}
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
+        {!hideHeader &&
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+        }
         {/* ------------------------------- Body -------------------------------- */}
         <TableBody>
-          {table.getRowModel().rows.length ? (
+          {loading ? (
+            /* ❶  Skeleton rows ------------------------------------------------ */
+            Array.from({ length: skeletonRows }).map((_, rIdx) => (
+              <TableRow key={`skeleton-${rIdx}`}>
+                {Array.from({ length: colCount }).map((_, cIdx) => (
+                  <TableCell key={`skeleton-${rIdx}-${cIdx}`}>
+                    <Skeleton className="h-10 w-full" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : table.getRowModel().rows.length ? (
+            /* ❷  Real data rows ---------------------------------------------- */
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext(),
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
             ))
           ) : (
+            /* ❸  Empty state --------------------------------------------------- */
             <TableRow>
               <TableCell
-                colSpan={table.getAllColumns().length}
+                colSpan={colCount}
                 className="h-24 text-center"
               >
                 No data.

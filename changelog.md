@@ -23,9 +23,14 @@
   }
 }
 ```
-    - [ ] Test run query and render
+- [ ] Test run query and render
 - [ ] Add mutation query to start container
 
+```ts
+mutation RestartDeployment {
+    deploymentRestart(id: String)
+}
+```
 
 - [ ] Add mutation query to stop container
 ```ts
@@ -38,3 +43,10 @@ mutation StopDeployment {
 - [ ] Button to start and stop container
 - [ ] View logs for starting and stopping container
 - [ ] Add tetris for when for container to finish starting
+
+
+- [x] Get services
+- [ ] Create service
+- [ ] Click service
+  - [ ] Service show deployments
+   - [ ] Filter by environment

@@ -20,6 +20,10 @@ export const DEPLOYMENT_FIELDS = gql`
     suggestAddServiceDomain
     deploymentStopped
 
+    environment {
+      name
+    }
+
     service {
       id
       name

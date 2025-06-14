@@ -5455,14 +5455,65 @@ export type CustomerTogglePayoutsToCreditsInput = {
   isWithdrawingToCredits: Scalars['Boolean']['input'];
 };
 
-export type DeploymentFieldsFragment = { __typename?: 'Deployment', id: string, status: DeploymentStatus, createdAt: any, updatedAt: any, statusUpdatedAt?: any | null, projectId: string, serviceId?: string | null, environmentId: string, url?: string | null, staticUrl?: string | null, canRollback: boolean, canRedeploy: boolean, suggestAddServiceDomain: boolean, deploymentStopped: boolean, service: { __typename?: 'Service', id: string, name: string }, creator?: { __typename?: 'DeploymentCreator', id: string, name?: string | null, avatar?: string | null } | null };
+export type DeploymentFieldsFragment = { __typename?: 'Deployment', id: string, status: DeploymentStatus, createdAt: any, updatedAt: any, statusUpdatedAt?: any | null, projectId: string, serviceId?: string | null, environmentId: string, url?: string | null, staticUrl?: string | null, canRollback: boolean, canRedeploy: boolean, suggestAddServiceDomain: boolean, deploymentStopped: boolean, environment: { __typename?: 'Environment', name: string }, service: { __typename?: 'Service', id: string, name: string }, creator?: { __typename?: 'DeploymentCreator', id: string, name?: string | null, avatar?: string | null } | null };
 
-export type GetDeploymentsQueryVariables = Exact<{
-  projectId?: InputMaybe<Scalars['String']['input']>;
+export type ServiceFieldsFragment = { __typename?: 'Service', name: string, icon?: string | null, id: string };
+
+export type CreateServiceMutationVariables = Exact<{
+  input: ServiceCreateInput;
 }>;
 
 
-export type GetDeploymentsQuery = { __typename?: 'Query', deployments: { __typename?: 'QueryDeploymentsConnection', edges: Array<{ __typename?: 'QueryDeploymentsConnectionEdge', node: { __typename?: 'Deployment', id: string, status: DeploymentStatus, createdAt: any, updatedAt: any, statusUpdatedAt?: any | null, projectId: string, serviceId?: string | null, environmentId: string, url?: string | null, staticUrl?: string | null, canRollback: boolean, canRedeploy: boolean, suggestAddServiceDomain: boolean, deploymentStopped: boolean, service: { __typename?: 'Service', id: string, name: string }, creator?: { __typename?: 'DeploymentCreator', id: string, name?: string | null, avatar?: string | null } | null } }> } };
+export type CreateServiceMutation = { __typename?: 'Mutation', serviceCreate: { __typename?: 'Service', name: string, icon?: string | null, id: string } };
+
+export type DeleteServiceMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteServiceMutation = { __typename?: 'Mutation', serviceDelete: boolean };
+
+export type RedeployDeploymentMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RedeployDeploymentMutation = { __typename?: 'Mutation', deploymentRedeploy: { __typename?: 'Deployment', id: string } };
+
+export type RestartDeploymentMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RestartDeploymentMutation = { __typename?: 'Mutation', deploymentRestart: boolean };
+
+export type StopDeploymentMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type StopDeploymentMutation = { __typename?: 'Mutation', deploymentStop: boolean };
+
+export type GetDeploymentsQueryVariables = Exact<{
+  input: DeploymentListInput;
+}>;
+
+
+export type GetDeploymentsQuery = { __typename?: 'Query', deployments: { __typename?: 'QueryDeploymentsConnection', edges: Array<{ __typename?: 'QueryDeploymentsConnectionEdge', node: { __typename?: 'Deployment', id: string, status: DeploymentStatus, createdAt: any, updatedAt: any, statusUpdatedAt?: any | null, projectId: string, serviceId?: string | null, environmentId: string, url?: string | null, staticUrl?: string | null, canRollback: boolean, canRedeploy: boolean, suggestAddServiceDomain: boolean, deploymentStopped: boolean, environment: { __typename?: 'Environment', name: string }, service: { __typename?: 'Service', id: string, name: string }, creator?: { __typename?: 'DeploymentCreator', id: string, name?: string | null, avatar?: string | null } | null } }> } };
+
+export type GetProjectQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, name: string } };
+
+export type GetServicesQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+
+export type GetServicesQuery = { __typename?: 'Query', project: { __typename?: 'Project', services: { __typename?: 'ProjectServicesConnection', edges: Array<{ __typename?: 'ProjectServicesConnectionEdge', node: { __typename?: 'Service', name: string, icon?: string | null, id: string } }> } } };
 
 export const DeploymentFieldsFragmentDoc = gql`
     fragment DeploymentFields on Deployment {
@@ -5480,6 +5531,9 @@ export const DeploymentFieldsFragmentDoc = gql`
   canRedeploy
   suggestAddServiceDomain
   deploymentStopped
+  environment {
+    name
+  }
   service {
     id
     name
@@ -5491,9 +5545,175 @@ export const DeploymentFieldsFragmentDoc = gql`
   }
 }
     `;
+export const ServiceFieldsFragmentDoc = gql`
+    fragment ServiceFields on Service {
+  name
+  icon
+  id
+}
+    `;
+export const CreateServiceDocument = gql`
+    mutation CreateService($input: ServiceCreateInput!) {
+  serviceCreate(input: $input) {
+    ...ServiceFields
+  }
+}
+    ${ServiceFieldsFragmentDoc}`;
+export type CreateServiceMutationFn = Apollo.MutationFunction<CreateServiceMutation, CreateServiceMutationVariables>;
+
+/**
+ * __useCreateServiceMutation__
+ *
+ * To run a mutation, you first call `useCreateServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServiceMutation, { data, loading, error }] = useCreateServiceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateServiceMutation(baseOptions?: Apollo.MutationHookOptions<CreateServiceMutation, CreateServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateServiceMutation, CreateServiceMutationVariables>(CreateServiceDocument, options);
+      }
+export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
+export type CreateServiceMutationResult = Apollo.MutationResult<CreateServiceMutation>;
+export type CreateServiceMutationOptions = Apollo.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
+export const DeleteServiceDocument = gql`
+    mutation DeleteService($id: String!) {
+  serviceDelete(id: $id)
+}
+    `;
+export type DeleteServiceMutationFn = Apollo.MutationFunction<DeleteServiceMutation, DeleteServiceMutationVariables>;
+
+/**
+ * __useDeleteServiceMutation__
+ *
+ * To run a mutation, you first call `useDeleteServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteServiceMutation, { data, loading, error }] = useDeleteServiceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteServiceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteServiceMutation, DeleteServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteServiceMutation, DeleteServiceMutationVariables>(DeleteServiceDocument, options);
+      }
+export type DeleteServiceMutationHookResult = ReturnType<typeof useDeleteServiceMutation>;
+export type DeleteServiceMutationResult = Apollo.MutationResult<DeleteServiceMutation>;
+export type DeleteServiceMutationOptions = Apollo.BaseMutationOptions<DeleteServiceMutation, DeleteServiceMutationVariables>;
+export const RedeployDeploymentDocument = gql`
+    mutation RedeployDeployment($id: String!) {
+  deploymentRedeploy(id: $id) {
+    id
+  }
+}
+    `;
+export type RedeployDeploymentMutationFn = Apollo.MutationFunction<RedeployDeploymentMutation, RedeployDeploymentMutationVariables>;
+
+/**
+ * __useRedeployDeploymentMutation__
+ *
+ * To run a mutation, you first call `useRedeployDeploymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRedeployDeploymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [redeployDeploymentMutation, { data, loading, error }] = useRedeployDeploymentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRedeployDeploymentMutation(baseOptions?: Apollo.MutationHookOptions<RedeployDeploymentMutation, RedeployDeploymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RedeployDeploymentMutation, RedeployDeploymentMutationVariables>(RedeployDeploymentDocument, options);
+      }
+export type RedeployDeploymentMutationHookResult = ReturnType<typeof useRedeployDeploymentMutation>;
+export type RedeployDeploymentMutationResult = Apollo.MutationResult<RedeployDeploymentMutation>;
+export type RedeployDeploymentMutationOptions = Apollo.BaseMutationOptions<RedeployDeploymentMutation, RedeployDeploymentMutationVariables>;
+export const RestartDeploymentDocument = gql`
+    mutation RestartDeployment($id: String!) {
+  deploymentRestart(id: $id)
+}
+    `;
+export type RestartDeploymentMutationFn = Apollo.MutationFunction<RestartDeploymentMutation, RestartDeploymentMutationVariables>;
+
+/**
+ * __useRestartDeploymentMutation__
+ *
+ * To run a mutation, you first call `useRestartDeploymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRestartDeploymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [restartDeploymentMutation, { data, loading, error }] = useRestartDeploymentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRestartDeploymentMutation(baseOptions?: Apollo.MutationHookOptions<RestartDeploymentMutation, RestartDeploymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RestartDeploymentMutation, RestartDeploymentMutationVariables>(RestartDeploymentDocument, options);
+      }
+export type RestartDeploymentMutationHookResult = ReturnType<typeof useRestartDeploymentMutation>;
+export type RestartDeploymentMutationResult = Apollo.MutationResult<RestartDeploymentMutation>;
+export type RestartDeploymentMutationOptions = Apollo.BaseMutationOptions<RestartDeploymentMutation, RestartDeploymentMutationVariables>;
+export const StopDeploymentDocument = gql`
+    mutation StopDeployment($id: String!) {
+  deploymentStop(id: $id)
+}
+    `;
+export type StopDeploymentMutationFn = Apollo.MutationFunction<StopDeploymentMutation, StopDeploymentMutationVariables>;
+
+/**
+ * __useStopDeploymentMutation__
+ *
+ * To run a mutation, you first call `useStopDeploymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStopDeploymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [stopDeploymentMutation, { data, loading, error }] = useStopDeploymentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useStopDeploymentMutation(baseOptions?: Apollo.MutationHookOptions<StopDeploymentMutation, StopDeploymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StopDeploymentMutation, StopDeploymentMutationVariables>(StopDeploymentDocument, options);
+      }
+export type StopDeploymentMutationHookResult = ReturnType<typeof useStopDeploymentMutation>;
+export type StopDeploymentMutationResult = Apollo.MutationResult<StopDeploymentMutation>;
+export type StopDeploymentMutationOptions = Apollo.BaseMutationOptions<StopDeploymentMutation, StopDeploymentMutationVariables>;
 export const GetDeploymentsDocument = gql`
-    query GetDeployments($projectId: String) {
-  deployments(input: {projectId: $projectId}) {
+    query GetDeployments($input: DeploymentListInput!) {
+  deployments(input: $input) {
     edges {
       node {
         ...DeploymentFields
@@ -5515,11 +5735,11 @@ export const GetDeploymentsDocument = gql`
  * @example
  * const { data, loading, error } = useGetDeploymentsQuery({
  *   variables: {
- *      projectId: // value for 'projectId'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetDeploymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetDeploymentsQuery, GetDeploymentsQueryVariables>) {
+export function useGetDeploymentsQuery(baseOptions: Apollo.QueryHookOptions<GetDeploymentsQuery, GetDeploymentsQueryVariables> & ({ variables: GetDeploymentsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetDeploymentsQuery, GetDeploymentsQueryVariables>(GetDeploymentsDocument, options);
       }
@@ -5535,3 +5755,90 @@ export type GetDeploymentsQueryHookResult = ReturnType<typeof useGetDeploymentsQ
 export type GetDeploymentsLazyQueryHookResult = ReturnType<typeof useGetDeploymentsLazyQuery>;
 export type GetDeploymentsSuspenseQueryHookResult = ReturnType<typeof useGetDeploymentsSuspenseQuery>;
 export type GetDeploymentsQueryResult = Apollo.QueryResult<GetDeploymentsQuery, GetDeploymentsQueryVariables>;
+export const GetProjectDocument = gql`
+    query GetProject($id: String!) {
+  project(id: $id) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetProjectQuery__
+ *
+ * To run a query within a React component, call `useGetProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProjectQuery(baseOptions: Apollo.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables> & ({ variables: GetProjectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
+      }
+export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
+        }
+export function useGetProjectSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
+        }
+export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
+export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
+export type GetProjectSuspenseQueryHookResult = ReturnType<typeof useGetProjectSuspenseQuery>;
+export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
+export const GetServicesDocument = gql`
+    query GetServices($projectId: String!) {
+  project(id: $projectId) {
+    services {
+      edges {
+        node {
+          ...ServiceFields
+        }
+      }
+    }
+  }
+}
+    ${ServiceFieldsFragmentDoc}`;
+
+/**
+ * __useGetServicesQuery__
+ *
+ * To run a query within a React component, call `useGetServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServicesQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useGetServicesQuery(baseOptions: Apollo.QueryHookOptions<GetServicesQuery, GetServicesQueryVariables> & ({ variables: GetServicesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetServicesQuery, GetServicesQueryVariables>(GetServicesDocument, options);
+      }
+export function useGetServicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetServicesQuery, GetServicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetServicesQuery, GetServicesQueryVariables>(GetServicesDocument, options);
+        }
+export function useGetServicesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetServicesQuery, GetServicesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetServicesQuery, GetServicesQueryVariables>(GetServicesDocument, options);
+        }
+export type GetServicesQueryHookResult = ReturnType<typeof useGetServicesQuery>;
+export type GetServicesLazyQueryHookResult = ReturnType<typeof useGetServicesLazyQuery>;
+export type GetServicesSuspenseQueryHookResult = ReturnType<typeof useGetServicesSuspenseQuery>;
+export type GetServicesQueryResult = Apollo.QueryResult<GetServicesQuery, GetServicesQueryVariables>;
