@@ -67,7 +67,7 @@ export function ServicesView() {
                 }}
             >
                 <SheetContent
-                    className='w-80vw'
+                    wide
                     side="right"
                 >
                     <SheetHeader>
@@ -88,7 +88,7 @@ export function ServicesView() {
 
                             <div>
                                 <h2 className="text-sm mb-4 font-semibold">Deployments</h2>
-                                <DeploymentTable serviceId={selectedServiceId} />
+                                <DeploymentTable serviceId={selectedServiceId} hideServiceColumn />
                             </div>}
                     </div>
                     <SheetClose />

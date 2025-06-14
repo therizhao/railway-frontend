@@ -10,7 +10,8 @@ import {
 import { toast } from 'sonner'
 import {
     format,
-    formatDistanceToNow
+    differenceInDays,
+    formatDistanceToNowStrict
 } from "date-fns"
 import { formatInTimeZone } from "date-fns-tz"
 import {
@@ -80,7 +81,7 @@ const COLUMNS: ColumnDef<Node>[] = [
             const short = format(date, "M/d/yy")
 
             /* relative distance  ------------------------------------------------- */
-            const daysAgo = formatDistanceToNow(date, { addSuffix: true })
+            const daysAgo = formatDistanceToNowStrict(date, { addSuffix: true, roundingMethod: "floor" })
 
             /* absolute times ----------------------------------------------------- */
             const utcTime = formatInTimeZone(
@@ -90,13 +91,15 @@ const COLUMNS: ColumnDef<Node>[] = [
             )
             const localTime = format(date, "MMMM dd yyyy HH:mm:ss")
             const localTimezone = format(new Date(), "O")
+            const isYoungerThanADay = differenceInDays(new Date(), date) < 1
+
 
 
             return (
                 <TooltipProvider>
                     <Tooltip >
                         <TooltipTrigger asChild>
-                            <span className="font-mono cursor-default">{short}</span>
+                            <div className="cursor-default first-letter:uppercase">{isYoungerThanADay ? daysAgo : short}</div>
                         </TooltipTrigger>
 
                         <TooltipContent className="flex flex-col gap-1 py-4">
@@ -113,13 +116,15 @@ const COLUMNS: ColumnDef<Node>[] = [
 
 type Props = {
     // Optional service Id. If provided we will filter output by service ID.
-    serviceId?: string;
+    serviceId?: string
     showServiceFilter?: boolean
+    hideServiceColumn?: boolean
 }
 
 export function DeploymentTable({
     serviceId,
-    showServiceFilter = false
+    showServiceFilter = false,
+    hideServiceColumn = false
 }: Props) {
     const toastIdRef = useRef<string | number>(0)
     const { data, loading, refetch } = useGetDeploymentsQuery({
@@ -195,6 +200,14 @@ export function DeploymentTable({
         [nodes, serviceFilter],
     )
 
+    const renderedColumns = useMemo(() => {
+        if (hideServiceColumn) {
+            return COLUMNS.filter(column => column.id !== 'service')
+        }
+
+        return COLUMNS
+    }, [hideServiceColumn])
+
     const renderActions = useCallback(
         (row: Node) => (
             <>
@@ -262,7 +275,7 @@ export function DeploymentTable({
                 loading={loading}
                 data={filteredNodes}
                 hideHeader
-                columns={COLUMNS}
+                columns={renderedColumns}
                 renderActions={renderActions}
             />
         </>
