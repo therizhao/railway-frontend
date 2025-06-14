@@ -12,7 +12,6 @@ import {
     SheetTitle,
     SheetClose,
 } from "@/components/ui/sheet"
-import { Service } from '@/lib/types'
 import { DeploymentTable } from './deployment-table'
 
 
