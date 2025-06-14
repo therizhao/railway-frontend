@@ -10,7 +10,7 @@ function App() {
     variables: {
       projectId: PROJECT_ID
     }
-  }
+  })
 
   return (
     <>
