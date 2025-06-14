@@ -67,6 +67,19 @@ export function ServicesView() {
             {loading && <Skeleton className="w-full h-[80vh] border border-gray-200 rounded-lg" />}
             {data &&
                 <ServiceFlow
+                    /* -------------------------------------------------------------------
+                        React will reuse a component as long as its `key` stays the same.
+                        `ServiceFlow` keeps its own internal node state that is ONLY
+                        initialised on mount (via useNodesState). If the list of services
+                        changes after a refetch, the component would otherwise keep showing
+                        the stale nodes.
+                    
+                        By concatenating every service id we get a fingerprint of the
+                        current list. Whenever a service is added / removed / renamed,
+                        the string changes → the key changes → React unmounts the old
+                        instance and mounts a fresh one with the updated node data.
+                    ------------------------------------------------------------------- */
+                    key={services.map((s) => s.id).join("-")}
                     onServiceClick={(id) => setSelectedServiceId(id)}
                     onAdd={() => {
                         createService({ variables: { input: { projectId: PROJECT_ID } } })
