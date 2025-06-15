@@ -31,6 +31,7 @@ import {
 export type DataTableProps<T> = {
   columns: ColumnDef<T>[]
   loading: boolean
+  emptyText?: string
   data?: T[]
   renderActions: (row: T) => React.ReactNode
   hideHeader?: boolean;
@@ -45,6 +46,7 @@ export function DataTable<T extends { id?: string }>({
   data = [],
   loading,
   hideHeader = false,
+  emptyText = 'No data',
   renderActions,
 }: DataTableProps<T>) {
   /* -------------------------------- Actions col -------------------------- */
@@ -152,7 +154,7 @@ export function DataTable<T extends { id?: string }>({
                 colSpan={colCount}
                 className="h-24 text-center"
               >
-                No data.
+                {emptyText}
               </TableCell>
             </TableRow>
           )}

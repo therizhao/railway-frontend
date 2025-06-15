@@ -290,6 +290,7 @@ export function DeploymentTable({
                 loading={loading}
                 data={filteredNodes}
                 hideHeader
+                emptyText="No deployments"
                 columns={renderedColumns}
                 renderActions={renderActions}
             />

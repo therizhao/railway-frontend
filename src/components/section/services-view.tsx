@@ -32,9 +32,9 @@ export function ServicesView() {
                     toast.dismiss(toastIdRef.current)
                     toast.error(e.message)
                 },
-                onCompleted: () => {
+                onCompleted: (data) => {
                     toast.dismiss(toastIdRef.current)
-                    toast.success("Deployment done")
+                    toast.success(`Service ${data.serviceCreate.name} created`)
                     refetch()
                 },
             }
@@ -123,11 +123,12 @@ export function ServicesView() {
                             {/* Deployments tab */}
                             <TabsContent value="deployments" className="mt-2 flex flex-col">
                                 {(() => {
-                                    const deployment = selectedService.deployments.edges[0].node;
-                                    if (!deployment) {
+                                    const edge = selectedService.deployments.edges[0];
+                                    if (!edge) {
                                         return null
                                     }
 
+                                    const deployment = edge.node;
                                     const url = deployment.staticUrl ?? ''
                                     const display = url.replace(/^https?:\/\//, "")
                                     const globeColor =
