@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnDef,
   flexRender,
@@ -6,16 +6,16 @@ import {
   useReactTable,
   SortingState,
   getSortedRowModel
-} from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+} from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -23,7 +23,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 /* -------------------------------------------------------------------------- */
 /*                                   TYPES                                    */
@@ -56,7 +56,7 @@ export function DataTable<T extends { id?: string }>({
       header: () => null,
       enableHiding: false,
       cell: ({ row }) => {
-        const item = row.original
+        const item = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -69,13 +69,13 @@ export function DataTable<T extends { id?: string }>({
               {renderActions(item)}
             </DropdownMenuContent>
           </DropdownMenu>
-        )
+        );
       },
     }),
     [renderActions],
-  )
+  );
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
 
   /* Merge user columns with the extra actions column */
   const table = useReactTable({
@@ -90,11 +90,11 @@ export function DataTable<T extends { id?: string }>({
     state: {
       sorting,
     },
-  })
+  });
 
 
-  const colCount = table.getAllColumns().length
-  const skeletonRows = 5 // how many placeholder rows to show while loading
+  const colCount = table.getAllColumns().length;
+  const skeletonRows = 5; // how many placeholder rows to show while loading
 
   /* ---------------------------------------------------------------------- */
   /*                                 render                                 */
@@ -161,5 +161,5 @@ export function DataTable<T extends { id?: string }>({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

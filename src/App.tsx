@@ -1,25 +1,25 @@
-import { useState } from "react"
-import { Toaster } from "@/components/ui/sonner"
+import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
 
-import { DeploymentTable } from "@/components/section/deployment-table"
-import { ServicesView } from "@/components/section/services-view"
-import { useGetProjectQuery } from "@/graphql/generated/graphql"
-import { PROJECT_ID } from "@/config"
-import { Skeleton } from "@/components/ui/skeleton"
-import { RailwayLogo } from "@/components/ui/logo"
-import { useAuth } from "@/lib/auth"
-import { Button } from "@/components/ui/button"
+import { DeploymentTable } from "@/components/section/deployment-table";
+import { ServicesView } from "@/components/section/services-view";
+import { useGetProjectQuery } from "@/graphql/generated/graphql";
+import { PROJECT_ID } from "@/config";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RailwayLogo } from "@/components/ui/logo";
+import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 export default function App() {
-  const { data, loading } = useGetProjectQuery({ variables: { id: PROJECT_ID } })
+  const { data, loading } = useGetProjectQuery({ variables: { id: PROJECT_ID } });
   const { logout } = useAuth();
-  const [tab, setTab] = useState<"deployments" | "services">("services")
+  const [tab, setTab] = useState<"deployments" | "services">("services");
 
   return (
     <div className="py-8 px-16 flex flex-col gap-4">
@@ -61,5 +61,5 @@ export default function App() {
       {/* ── Global toaster ──────────────────────────────────────────────── */}
       <Toaster position="top-center" richColors />
     </div>
-  )
+  );
 }

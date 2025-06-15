@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const REDEPLOY_DEPLOYMENT = gql`
   mutation RedeployDeployment($id: String!) {
@@ -6,4 +6,4 @@ export const REDEPLOY_DEPLOYMENT = gql`
       id
     }
   }
-`
+`;

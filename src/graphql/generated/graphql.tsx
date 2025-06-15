@@ -5587,7 +5587,7 @@ export type CreateServiceMutationFn = Apollo.MutationFunction<CreateServiceMutat
  * });
  */
 export function useCreateServiceMutation(baseOptions?: Apollo.MutationHookOptions<CreateServiceMutation, CreateServiceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<CreateServiceMutation, CreateServiceMutationVariables>(CreateServiceDocument, options);
       }
 export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
@@ -5618,7 +5618,7 @@ export type DeleteServiceMutationFn = Apollo.MutationFunction<DeleteServiceMutat
  * });
  */
 export function useDeleteServiceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteServiceMutation, DeleteServiceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<DeleteServiceMutation, DeleteServiceMutationVariables>(DeleteServiceDocument, options);
       }
 export type DeleteServiceMutationHookResult = ReturnType<typeof useDeleteServiceMutation>;
@@ -5651,7 +5651,7 @@ export type RedeployDeploymentMutationFn = Apollo.MutationFunction<RedeployDeplo
  * });
  */
 export function useRedeployDeploymentMutation(baseOptions?: Apollo.MutationHookOptions<RedeployDeploymentMutation, RedeployDeploymentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<RedeployDeploymentMutation, RedeployDeploymentMutationVariables>(RedeployDeploymentDocument, options);
       }
 export type RedeployDeploymentMutationHookResult = ReturnType<typeof useRedeployDeploymentMutation>;
@@ -5682,7 +5682,7 @@ export type RestartDeploymentMutationFn = Apollo.MutationFunction<RestartDeploym
  * });
  */
 export function useRestartDeploymentMutation(baseOptions?: Apollo.MutationHookOptions<RestartDeploymentMutation, RestartDeploymentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<RestartDeploymentMutation, RestartDeploymentMutationVariables>(RestartDeploymentDocument, options);
       }
 export type RestartDeploymentMutationHookResult = ReturnType<typeof useRestartDeploymentMutation>;
@@ -5713,7 +5713,7 @@ export type StopDeploymentMutationFn = Apollo.MutationFunction<StopDeploymentMut
  * });
  */
 export function useStopDeploymentMutation(baseOptions?: Apollo.MutationHookOptions<StopDeploymentMutation, StopDeploymentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<StopDeploymentMutation, StopDeploymentMutationVariables>(StopDeploymentDocument, options);
       }
 export type StopDeploymentMutationHookResult = ReturnType<typeof useStopDeploymentMutation>;
@@ -5748,15 +5748,15 @@ export const GetDeploymentsDocument = gql`
  * });
  */
 export function useGetDeploymentsQuery(baseOptions: Apollo.QueryHookOptions<GetDeploymentsQuery, GetDeploymentsQueryVariables> & ({ variables: GetDeploymentsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<GetDeploymentsQuery, GetDeploymentsQueryVariables>(GetDeploymentsDocument, options);
       }
 export function useGetDeploymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDeploymentsQuery, GetDeploymentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<GetDeploymentsQuery, GetDeploymentsQueryVariables>(GetDeploymentsDocument, options);
         }
 export function useGetDeploymentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetDeploymentsQuery, GetDeploymentsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions};
           return Apollo.useSuspenseQuery<GetDeploymentsQuery, GetDeploymentsQueryVariables>(GetDeploymentsDocument, options);
         }
 export type GetDeploymentsQueryHookResult = ReturnType<typeof useGetDeploymentsQuery>;
@@ -5789,15 +5789,15 @@ export const GetProjectDocument = gql`
  * });
  */
 export function useGetProjectQuery(baseOptions: Apollo.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables> & ({ variables: GetProjectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
       }
 export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
         }
 export function useGetProjectSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions};
           return Apollo.useSuspenseQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
         }
 export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
@@ -5835,15 +5835,15 @@ export const GetServicesDocument = gql`
  * });
  */
 export function useGetServicesQuery(baseOptions: Apollo.QueryHookOptions<GetServicesQuery, GetServicesQueryVariables> & ({ variables: GetServicesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<GetServicesQuery, GetServicesQueryVariables>(GetServicesDocument, options);
       }
 export function useGetServicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetServicesQuery, GetServicesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<GetServicesQuery, GetServicesQueryVariables>(GetServicesDocument, options);
         }
 export function useGetServicesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetServicesQuery, GetServicesQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions};
           return Apollo.useSuspenseQuery<GetServicesQuery, GetServicesQueryVariables>(GetServicesDocument, options);
         }
 export type GetServicesQueryHookResult = ReturnType<typeof useGetServicesQuery>;

@@ -1,13 +1,13 @@
-import { useMemo } from "react"
+import { useMemo } from "react";
 import ReactFlow, {
   Background,
   Node,
   Edge,
   useNodesState,
   useEdgesState,
-} from "reactflow"
-import { Code, Plus } from "lucide-react"
-import "reactflow/dist/style.css"
+} from "reactflow";
+import { Code, Plus } from "lucide-react";
+import "reactflow/dist/style.css";
 import { Button } from "./button";
 import { Service } from "@/lib/types";
 
@@ -22,10 +22,10 @@ function ServiceNode({ data }: { data: Service }) {
       )}
       <span className="font-medium">{data.name}</span>
     </div>
-  )
+  );
 }
 
-const nodeTypes = { service: ServiceNode }
+const nodeTypes = { service: ServiceNode };
 
 type Props = {
   data: Service[]
@@ -47,10 +47,10 @@ export function ServiceFlow({ data, onServiceClick, onAdd }: Props) {
         data: { name: node.name, icon: node.icon ?? undefined },
       })),
     [data],
-  )
+  );
 
-  const [nodes, , onNodesChange] = useNodesState(initialNodes)
-  const [edges, , onEdgesChange] = useEdgesState<Edge[]>([])
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState<Edge[]>([]);
 
   return (
     <div className="w-full h-[80vh] border border-gray-200 rounded-lg relative">
@@ -73,13 +73,13 @@ export function ServiceFlow({ data, onServiceClick, onAdd }: Props) {
         fitView
         onInit={(instance) => {
           // ❷  after fitView runs, shift the camera up & tweak zoom
-          const { x, y, zoom } = instance.getViewport()
-          instance.setViewport({ x: x + 30, y: y - 50, zoom: zoom * 0.8 })
+          const { x, y, zoom } = instance.getViewport();
+          instance.setViewport({ x: x + 30, y: y - 50, zoom: zoom * 0.8 });
         }}
         onNodeClick={(_, node) => onServiceClick?.(node.id)}
       >
         <Background gap={16} size={1} />
       </ReactFlow>
     </div>
-  )
+  );
 }

@@ -19,10 +19,10 @@ export function LoginView() {
         try {
             const ok = await login(pwdRef.current?.value ?? "");
             if (!ok) {
-                setError("Wrong password")
+                setError("Wrong password");
             }
-        } catch (err) {
-            setError("Unexpected error")
+        } catch {
+            setError("Unexpected error");
         } finally {
             setLoading(false);
         }

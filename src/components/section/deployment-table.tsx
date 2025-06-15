@@ -1,32 +1,32 @@
-import { useCallback, useRef, useState, useMemo } from "react"
-import { ColumnDef } from "@tanstack/react-table"
+import { useCallback, useRef, useState, useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import {
     Select,
     SelectTrigger,
     SelectValue,
     SelectContent,
     SelectItem,
-} from "@/components/ui/select"
-import { toast } from 'sonner'
+} from "@/components/ui/select";
+import { toast } from 'sonner';
 import {
     format,
     differenceInDays,
     formatDistanceToNowStrict
-} from "date-fns"
-import { formatInTimeZone } from "date-fns-tz"
+} from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import {
     DropdownMenuItem,
     DropdownMenuGroup,
     DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import { DeploymentStatus, GetDeploymentsQuery, useGetDeploymentsQuery, useRedeployDeploymentMutation, useRestartDeploymentMutation, useStopDeploymentMutation } from "@/graphql/generated/graphql";
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
     Tooltip,
     TooltipTrigger,
     TooltipContent,
     TooltipProvider,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import { DataTable } from '@/components/ui/data-table';
 import { PROJECT_ID } from "@/config";
 
@@ -50,14 +50,14 @@ const COLUMNS: ColumnDef<Node>[] = [
         cell: ({ row }) => <Badge variant={(() => {
             switch (row.original.status) {
                 case DeploymentStatus.Success:
-                    return 'green'
+                    return 'green';
                 case DeploymentStatus.Failed:
                 case DeploymentStatus.Crashed:
-                    return 'red'
+                    return 'red';
                 case DeploymentStatus.Removed:
-                    return 'gray'
+                    return 'gray';
                 default:
-                    return 'yellow'
+                    return 'yellow';
             }
         })()}>
             <span className="capitalize">{row.original.status.toLowerCase()}</span>
@@ -77,23 +77,23 @@ const COLUMNS: ColumnDef<Node>[] = [
         //                   GMT+3 January 24 2024 04:33:45
         // ───────────────────────────────────────────────────────────────────
         cell: ({ row }) => {
-            const date = new Date(row.original.createdAt)
+            const date = new Date(row.original.createdAt);
 
             /* short format M/D/YY ------------------------------------------------ */
-            const short = format(date, "M/d/yy")
+            const short = format(date, "M/d/yy");
 
             /* relative distance  ------------------------------------------------- */
-            const daysAgo = formatDistanceToNowStrict(date, { addSuffix: true, roundingMethod: "floor" })
+            const daysAgo = formatDistanceToNowStrict(date, { addSuffix: true, roundingMethod: "floor" });
 
             /* absolute times ----------------------------------------------------- */
             const utcTime = formatInTimeZone(
                 date,
                 "UTC",
                 "MMMM dd yyyy HH:mm:ss",
-            )
-            const localTime = format(date, "MMMM dd yyyy HH:mm:ss")
-            const localTimezone = format(new Date(), "O")
-            const isYoungerThanADay = differenceInDays(new Date(), date) < 1
+            );
+            const localTime = format(date, "MMMM dd yyyy HH:mm:ss");
+            const localTimezone = format(new Date(), "O");
+            const isYoungerThanADay = differenceInDays(new Date(), date) < 1;
 
 
 
@@ -111,10 +111,10 @@ const COLUMNS: ColumnDef<Node>[] = [
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-            )
+            );
         },
     },
-]
+];
 
 type Props = {
     // Optional service Id. If provided we will filter output by service ID.
@@ -128,7 +128,7 @@ export function DeploymentTable({
     showServiceFilter = false,
     hideServiceColumn = false
 }: Props) {
-    const toastIdRef = useRef<string | number>(0)
+    const toastIdRef = useRef<string | number>(0);
     const { data, loading, refetch } = useGetDeploymentsQuery({
         variables: {
             input: {
@@ -136,62 +136,62 @@ export function DeploymentTable({
                 serviceId
             }
         }
-    })
+    });
 
     const [restartDeployment] =
         useRestartDeploymentMutation(
             {
                 onError: (e) => {
-                    toast.dismiss(toastIdRef.current)
-                    toast.error(e.message)
+                    toast.dismiss(toastIdRef.current);
+                    toast.error(e.message);
                 },
                 onCompleted: () => {
-                    toast.dismiss(toastIdRef.current)
-                    toast.success("Deployment restarted")
-                    refetch()
+                    toast.dismiss(toastIdRef.current);
+                    toast.success("Deployment restarted");
+                    refetch();
                 },
             }
-        )
+        );
 
     const [redeployDeployment] =
         useRedeployDeploymentMutation(
             {
                 onError: (e) => {
-                    toast.dismiss(toastIdRef.current)
-                    toast.error(e.message)
+                    toast.dismiss(toastIdRef.current);
+                    toast.error(e.message);
                 },
                 onCompleted: () => {
-                    toast.dismiss(toastIdRef.current)
-                    toast.success("Deployment done")
-                    refetch()
+                    toast.dismiss(toastIdRef.current);
+                    toast.success("Deployment done");
+                    refetch();
                 },
             }
-        )
+        );
 
     const [stopDeployment] =
         useStopDeploymentMutation(
             {
                 onError: (e) => {
-                    toast.dismiss(toastIdRef.current)
-                    toast.error(e.message)
+                    toast.dismiss(toastIdRef.current);
+                    toast.error(e.message);
                 },
                 onCompleted: () => {
-                    toast.dismiss(toastIdRef.current)
-                    toast.success("Deployment stopped")
-                    refetch()
+                    toast.dismiss(toastIdRef.current);
+                    toast.success("Deployment stopped");
+                    refetch();
                 },
             }
-        )
+        );
 
-    const [serviceFilter, setServiceFilter] = useState<string>(SERVICE_FILTER_ALL)
+    const [serviceFilter, setServiceFilter] = useState<string>(SERVICE_FILTER_ALL);
 
-    const nodes = data?.deployments.edges.map(edge => edge.node) ?? []
+    const nodes = data?.deployments.edges.map(edge => edge.node) ?? [];
 
     /* unique list of service names for the dropdown */
     const serviceNames = useMemo(
         () => [...new Set(nodes.map((n) => n.service.name))],
         [nodes],
-    )
+    );
 
     /* apply filter to the dataset */
     const filteredNodes = useMemo(
@@ -200,15 +200,15 @@ export function DeploymentTable({
                 ? nodes.filter((n) => n.service.name === serviceFilter)
                 : nodes,
         [nodes, serviceFilter],
-    )
+    );
 
     const renderedColumns = useMemo(() => {
         if (hideServiceColumn) {
-            return COLUMNS.filter(column => column.id !== 'service')
+            return COLUMNS.filter(column => column.id !== 'service');
         }
 
-        return COLUMNS
-    }, [hideServiceColumn])
+        return COLUMNS;
+    }, [hideServiceColumn]);
 
     const renderActions = useCallback(
         (row: Node) => (
@@ -217,7 +217,7 @@ export function DeploymentTable({
                     <DropdownMenuItem
                         onClick={() => {
                             if (row.staticUrl) {
-                                window.open(row.staticUrl, "_blank", "noopener,noreferrer")
+                                window.open(row.staticUrl, "_blank", "noopener,noreferrer");
                             }
                         }}
                     >
@@ -228,8 +228,8 @@ export function DeploymentTable({
                 <DropdownMenuGroup>
                     <DropdownMenuItem
                         onClick={() => {
-                            restartDeployment({ variables: { id: row.id } })
-                            toastIdRef.current = toast.loading("Restarting deployment…")
+                            restartDeployment({ variables: { id: row.id } });
+                            toastIdRef.current = toast.loading("Restarting deployment…");
                         }}
                     >
                         Restart
@@ -237,8 +237,8 @@ export function DeploymentTable({
 
                     <DropdownMenuItem
                         onClick={() => {
-                            redeployDeployment({ variables: { id: row.id } })
-                            toastIdRef.current = toast.loading("Redeploying…")
+                            redeployDeployment({ variables: { id: row.id } });
+                            toastIdRef.current = toast.loading("Redeploying…");
                         }}
                     >
                         Redeploy
@@ -247,8 +247,8 @@ export function DeploymentTable({
                     {!row.deploymentStopped &&
                         <DropdownMenuItem
                             onClick={() => {
-                                stopDeployment({ variables: { id: row.id } })
-                                toastIdRef.current = toast.loading("Stopping deployment…")
+                                stopDeployment({ variables: { id: row.id } });
+                                toastIdRef.current = toast.loading("Stopping deployment…");
                             }}
                         >
                             Stop
@@ -257,7 +257,7 @@ export function DeploymentTable({
             </>
         ),
         [restartDeployment],
-    )
+    );
 
     return (
         <>
@@ -295,6 +295,6 @@ export function DeploymentTable({
                 renderActions={renderActions}
             />
         </>
-    )
+    );
 }
 

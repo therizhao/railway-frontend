@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client"
-import { SERVICE_FIELDS } from "../fragments/service"
+import { gql } from "@apollo/client";
+import { SERVICE_FIELDS } from "../fragments/service";
 
 export const CREATE_SERVICE = gql`
   ${SERVICE_FIELDS}
@@ -8,4 +8,4 @@ export const CREATE_SERVICE = gql`
     serviceCreate(input: $input) {
         ...ServiceFields
     }
-  }`
+  }`;
