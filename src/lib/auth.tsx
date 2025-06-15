@@ -51,7 +51,7 @@ import {
     }, []);
 
     const logout = useCallback(async () => {
-      await fetch("/logout", { method: "POST", credentials: "include" });
+      await fetch(`${BACKEND_URL}/logout`, { method: "POST", credentials: "include" });
       setIsAuth(false);
     }, []);
   
