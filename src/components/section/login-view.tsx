@@ -10,14 +10,22 @@ export function LoginView() {
     const pwdRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState("");
     const [showPwd, setShowPwd] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        const ok = await login(pwdRef.current?.value ?? "");
-        if (!ok) {
-            setError("Wrong password")
-        };
+        setLoading(true);
+        try {
+            const ok = await login(pwdRef.current?.value ?? "");
+            if (!ok) {
+                setError("Wrong password")
+            }
+        } catch (err) {
+            setError("Unexpected error")
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -58,7 +66,7 @@ export function LoginView() {
                     </p>
                 )}
 
-                <Button className="w-full" type="submit">
+                <Button className="w-full" type="submit" loading={loading}>
                     Enter
                 </Button>
             </form>
