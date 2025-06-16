@@ -114,14 +114,14 @@ export function ServicesView() {
                             </SheetTitle>
                         </SheetHeader>
                         {/* ------------------------- Tabs ---------------------------- */}
-                        <Tabs defaultValue="deployments" className="px-4">
+                        <Tabs defaultValue="deployments"  className="flex flex-col flex-1 px-4 overflow-hidden">
                             <TabsList>
                                 <TabsTrigger value="deployments">Deployments</TabsTrigger>
                                 <TabsTrigger value="settings">Settings</TabsTrigger>
                             </TabsList>
 
                             {/* Deployments tab */}
-                            <TabsContent value="deployments" className="mt-2 flex flex-col">
+                            <TabsContent value="deployments"  className="mt-2 flex-1 overflow-y-auto">
                                 {(() => {
                                     const edge = selectedService.deployments.edges[0];
                                     if (!edge) {
