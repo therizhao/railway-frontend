@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useMemo } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import {
     Select,
@@ -129,7 +129,7 @@ export function DeploymentTable({
     hideServiceColumn = false
 }: Props) {
     const toastIdRef = useRef<string | number>(0);
-    const { data, loading, refetch } = useGetDeploymentsQuery({
+    const { data, loading, refetch, startPolling, stopPolling } = useGetDeploymentsQuery({
         variables: {
             input: {
                 projectId: PROJECT_ID,
@@ -258,6 +258,30 @@ export function DeploymentTable({
         ),
         [restartDeployment],
     );
+
+    /* ──────────────────────────────────────────────────────────────────
+   2.  Whenever `data` changes, decide whether to poll
+────────────────────────────────────────────────────────────────── */
+    useEffect(() => {
+        if (!data) {
+            return
+        };
+
+        const shouldPoll = data.deployments.edges.some(({ node }) =>
+            [DeploymentStatus.Building, DeploymentStatus.Deploying].includes(
+                node.status,
+            ),
+        );
+
+        if (shouldPoll) {
+            startPolling(5000); // 5 s
+        } else {
+            stopPolling();
+        }
+
+        // safety: stop polling when component unmounts
+        return () => stopPolling();
+    }, [data, startPolling, stopPolling]);
 
     return (
         <>
